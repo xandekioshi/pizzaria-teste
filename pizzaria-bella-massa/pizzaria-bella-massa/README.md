@@ -80,6 +80,55 @@ E acesse no navegador: http://localhost:8000
 | Admin   | admin@bellamassa.com    | admin123    |
 | Cliente | cliente@teste.com       | cliente123  |
 
+## Telas do sistema
+
+O sistema é dividido em duas áreas: a do **cliente** (pública) e a do
+**administrador** (restrita). Abaixo, uma descrição das principais telas.
+
+### 1. Cardápio (`index.php`)
+É a página inicial e o coração do site. O menu superior se adapta ao usuário:
+mostra "Entrar" e "Cadastrar" para visitantes, ou o nome da pessoa e o link de
+sair quando há login (e o link do Painel Admin, se for administrador). Logo
+abaixo vem o banner de apresentação e o **cardápio dinâmico**, com as pizzas e
+bebidas vindas direto do banco de dados (separadas pelas abas "Pizzas" e
+"Bebidas"). Cada produto tem o botão "Adicionar", que joga o item no carrinho
+lateral e atualiza o total em tempo real. Ainda nesta página ficam a seção
+**"Crie sua pizza com Inteligência Artificial"** (escolhe 3 ingredientes e a IA
+gera nome e descrição) e os blocos "Sobre" e "Contato".
+
+### 2. Cadastro (`cadastro.php`)
+Formulário para o cliente criar uma conta, com nome, e-mail, senha e confirmação
+de senha. A senha é guardada no banco com hash (`password_hash`), nunca em texto
+puro, e todo novo usuário entra como cliente comum. Há validação tanto no
+navegador (as senhas precisam coincidir) quanto no back-end.
+
+### 3. Login (`login.php`)
+Tela de autenticação onde o usuário informa e-mail e senha. Ao entrar, o sistema
+cria a sessão (`$_SESSION`): clientes são levados ao cardápio e administradores
+ao painel. Só quem está logado consegue finalizar um pedido.
+
+### 4. Finalizar pedido / Checkout (`checkout.php`)
+Acessível apenas para usuários logados. De um lado fica o **endereço de
+entrega**, onde o cliente digita o CEP e a integração com o **ViaCEP** preenche
+rua, bairro, cidade e estado automaticamente. O botão "Calcular frete" envia os
+dados ao back-end, que é o único responsável por calcular a taxa de entrega. Do
+outro lado fica o **resumo do pedido**, com os itens, o subtotal, o frete e o
+total. Ao confirmar, o pedido é validado e salvo no banco de forma segura (o
+preço de cada item é sempre reconferido no servidor).
+
+### 5. Pedido confirmado (`pedido-confirmado.php`)
+Mostrada logo após fechar o pedido. Exibe o número do pedido e uma **linha do
+tempo de rastreio** (Pedido recebido → Em preparo → Saiu para entrega →
+Entregue) que se atualiza sozinha, sem recarregar a página, conforme o admin
+muda o status. Traz também o resumo com frete e total e um botão que monta um
+link do **WhatsApp** já com o resumo do pedido pronto para enviar ao restaurante.
+
+### Área administrativa (`admin/`)
+Restrita a administradores, reúne três telas: o **Dashboard** (com cartões de
+resumo e um gráfico de vendas), a tela de **Produtos** (cadastrar, editar e
+excluir itens do cardápio) e a de **Pedidos** (acompanhar os pedidos e mudar o
+status de cada um).
+
 ## O que está implementado
 
 Obrigatórios:
